@@ -1,0 +1,23 @@
+{
+  "id": {
+    "type": "id",
+    "name": "Id",
+    "path": "id"
+  },
+  "name": {
+    "type": "text",
+    "name": "Name",
+    "path": "name"
+  },
+  "type": {
+    "type": "text",
+    "name": "Type",
+    "path": "type"
+  },
+  "email": {
+    "type": "text",
+    "name": "Email",
+    "path": "person.email",
+    "subType": "email"
+  }
+}

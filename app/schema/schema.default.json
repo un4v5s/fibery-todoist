@@ -1,0 +1,29 @@
+{
+  "id": {
+    "type": "id",
+    "name": "Id",
+    "path": "id"
+  },
+  "archived": {
+    "type": "text",
+    "name": "Archived",
+    "subType": "boolean",
+    "path": "archived"
+  },
+  "created_time": {
+    "type": "date",
+    "name": "Created On",
+    "path": "created_time"
+  },
+  "last_edited_time": {
+    "type": "date",
+    "name": "Last Edited On",
+    "path": "last_edited_time"
+  },
+  "__notion_link": {
+    "type": "text",
+    "name": "Notion Link",
+    "subType": "url",
+    "path": "url"
+  }
+}
