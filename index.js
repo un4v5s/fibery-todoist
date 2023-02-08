@@ -3,7 +3,7 @@ const {waitBeforeServerClose} = require('./app/config');
 const {startServer} = require('./app/server');
 
 const shutdownHandler = registerShutdownHandlers({
-    waitBeforeServerClose,
+  waitBeforeServerClose,
 });
 
-startServer({shutdownHandler});
+startServer({ shutdownHandler });

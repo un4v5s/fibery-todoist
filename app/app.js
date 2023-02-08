@@ -5,6 +5,8 @@ const path = require(`path`);
 const { connector } = require(`./connector.config`);
 const _ = require(`lodash`);
 const notion = require(`./api/notion.api`);
+const todoist = require(`./api/todoist.api`);
+
 const morgan = require("morgan");
 const oauth = require("./oauth");
 
@@ -38,13 +40,31 @@ module.exports = function () {
   app.use(morgan("tiny"));
   app.use(bodyParser.json({ type: `*/*` }));
   app.use(express.static(path.join(__dirname, `public`)));
+  todoist.applyTodoistApiEndpoints(app);
+
   app.post(`/validate`, (req, res) =>
     promiseToResponse(
       res,
-      notion.validate(_.get(req, `body.fields`) || req.body)
+      // notion.validate(_.get(req, `body.fields`) || req.body)
+      todoist.validate(_.get(req, `body.fields`) || req.body)
     )
   );
-  app.get(`/`, (req, res) => res.json(connector()));
+  
+  app.get(`/`, async (req, res) => {
+    // if(req.query.code){
+    //   try {
+    //     const tokens = await oauth.getAccessToken(
+    //       req.query.code,
+    //       req.body.fields.callback_uri
+    //     );
+    //     res.json(tokens);
+    //   } catch (err) {
+    //     res.status(401).json({ message: "Unauthorized" });
+    //   }
+    // }else{
+      res.json(connector())
+    // }
+  });
   app.get(`/logo`, (req, res) =>
     res.sendFile(path.resolve(__dirname, `logo.svg`))
   );
@@ -61,25 +81,45 @@ module.exports = function () {
     promiseToResponse(res, notion.data(req.body))
   );
   app.post("/oauth2/v1/authorize", (req, res) => {
+    console.log("POST /oauth2/v1/authorize req.body: ", req.body);
     try {
       const { callback_uri: callbackUri, state } = req.body;
       const redirectUri = oauth.getAuthorizeUrl(callbackUri, state);
       res.json({ redirect_uri: redirectUri });
     } catch (err) {
-      res.status(401).json({ message: `Unauthorized` });
+      res.status(401).json({ message: `Unauthorizeda` });
     }
   });
+
+  // app.get("/oauth2/v1/access_token", async (req, res) => {
+  //   console.log("GET /oauth2/v1/access_token");
+  //   // console.log("req.body: ", req.body);
+  //   // console.log("req.query: ", req.query);
+  //   // console.log("fields: ", fields);
+  //   try {
+  //     const tokens = await oauth.getAccessToken(
+  //       req.query.code,
+  //       // req.body.fields.callback_uri
+  //     );
+  //     res.json(tokens);
+  //   } catch (err) {
+  //     res.status(401).json({ message: "Unauthorizedb" });
+  //   }
+  // });
+
   app.post("/oauth2/v1/access_token", async (req, res) => {
+    console.log("POST /oauth2/v1/access_token");
+    console.log("req.query: ", req.query);
+    console.log("req.body: ", req.body);
+    console.log("req.body.fields.callback_uri: ", req.body.fields.callback_uri);
     try {
-      const tokens = await oauth.getAccessToken(
-        req.body.code,
-        req.body.fields.callback_uri
-      );
+      const tokens = await oauth.getAccessToken(req.body.code, req.body.fields.callback_uri);
       res.json(tokens);
     } catch (err) {
-      res.status(401).json({ message: "Unauthorized" });
+      res.status(401).json({ message: "Unauthorizedb" });
     }
   });
+
   app.get(`/status`, statusRoute);
   return app;
 };

@@ -1,22 +1,37 @@
-// const _ = require('lodash');
+const _ = require('lodash');
 // const got = require(`got`);
 // const uuid = require(`uuid-by-string`);
 // const defaultSchema = require(`./schema.default.json`);
 // const { DateTime } = require("luxon"); // ! use dayjs
+const { TodoistApi } = require("@doist/todoist-api-typescript");
+require(`dotenv`).config();
 
-import _ from 'lodash';
+// import _ from 'lodash';
 // import got from 'got';
 // import uuid from 'uuid-by-string';
 // import { DateTime } from 'luxon';
 // import defaultSchema from '../../schema.default.json'
-import { TodoistApi } from "@doist/todoist-api-typescript";
-import * as dotenv from 'dotenv';
-dotenv.config()
+// import { TodoistApi } from "@doist/todoist-api-typescript";
+// import * as dotenv from 'dotenv';
+// dotenv.config()
 
-const api_key = process.env.TODOIST_API_KEY ?? "";
-const api = new TodoistApi(api_key);
+const getTodoistClient = (account) => new TodoistApi(
+  account.access_token || `INVALID TOKEN`
+);
+// const api_key = process.env.TODOIST_API_KEY ?? "";
+// const api = new TodoistApi(api_key);
 
-export default function applyTodoistApiEndpoints(app) {
+module.exports.validate = async (account) => {
+  console.log("account: ", account);
+  const client = getTodoistClient(account);
+  const projects = await client.getProjects().catch((error) => console.log(error));
+  console.log("projects: ", projects);
+  return { projects };
+};
+
+module.exports.applyTodoistApiEndpoints = (app) => {
+  console.log("applyTodoistApiEndpoints: ");
+
   app.get("/api/get_projects", async (req, res) => {
     api.getProjects()
       .then((projects) => {
@@ -57,8 +72,6 @@ export default function applyTodoistApiEndpoints(app) {
     }    
     res.json(collaborators);
   })
-
-
 }
 
 // module.exports.validate = async (sid) => {

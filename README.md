@@ -1,3 +1,3 @@
-# Notion App
+# Todoist App
 
 Advanced example of integration app.

@@ -8,6 +8,7 @@ module.exports = {
         return console.log(err.message);
       }
       console.log(`server started: http://localhost:%s`,config.port());
+
     });
     shutdownHandler.setServer(server);
   },
