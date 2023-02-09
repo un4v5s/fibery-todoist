@@ -4,7 +4,7 @@ const statusRoute = require(`./status`);
 const path = require(`path`);
 const { connector } = require(`./connector.config`);
 const _ = require(`lodash`);
-const notion = require(`./api/notion.api`);
+// const notion = require(`./api/notion.api`);
 const todoist = require(`./api/todoist.api`);
 
 const morgan = require("morgan");
@@ -45,41 +45,34 @@ module.exports = function () {
   app.post(`/validate`, (req, res) =>
     promiseToResponse(
       res,
-      // notion.validate(_.get(req, `body.fields`) || req.body)
       todoist.validate(_.get(req, `body.fields`) || req.body)
     )
   );
-  
-  app.get(`/`, async (req, res) => {
-    // if(req.query.code){
-    //   try {
-    //     const tokens = await oauth.getAccessToken(
-    //       req.query.code,
-    //       req.body.fields.callback_uri
-    //     );
-    //     res.json(tokens);
-    //   } catch (err) {
-    //     res.status(401).json({ message: "Unauthorized" });
-    //   }
-    // }else{
-      res.json(connector())
-    // }
+
+  app.get(`/`, (req, res) => {
+    res.json(connector());
   });
   app.get(`/logo`, (req, res) =>
     res.sendFile(path.resolve(__dirname, `logo.svg`))
   );
   app.post(`/api/v1/synchronizer/config`, (req, res) => {
+    console.log("/api/v1/synchronizer/config");
     if (_.isEmpty(req.body.account)) {
       throw new Error(`account should be provided`);
     }
-    promiseToResponse(res, notion.config(req.body));
+    // promiseToResponse(res, notion.config(req.body));
+    promiseToResponse(res, todoist.config(req.body));
   });
-  app.post(`/api/v1/synchronizer/schema`, (req, res) =>
-    promiseToResponse(res, notion.schema(req.body))
-  );
-  app.post(`/api/v1/synchronizer/data`, (req, res) =>
-    promiseToResponse(res, notion.data(req.body))
-  );
+  app.post(`/api/v1/synchronizer/schema`, (req, res) => {
+    console.log("/api/v1/synchronizer/schema");
+    // promiseToResponse(res, notion.schema(req.body))
+    promiseToResponse(res, todoist.schema(req.body));
+  });
+  app.post(`/api/v1/synchronizer/data`, (req, res) => {
+    console.log("/api/v1/synchronizer/data");
+    // promiseToResponse(res, notion.data(req.body))
+    promiseToResponse(res, todoist.data(req.body));
+  });
   app.post("/oauth2/v1/authorize", (req, res) => {
     console.log("POST /oauth2/v1/authorize req.body: ", req.body);
     try {
@@ -91,29 +84,16 @@ module.exports = function () {
     }
   });
 
-  // app.get("/oauth2/v1/access_token", async (req, res) => {
-  //   console.log("GET /oauth2/v1/access_token");
-  //   // console.log("req.body: ", req.body);
-  //   // console.log("req.query: ", req.query);
-  //   // console.log("fields: ", fields);
-  //   try {
-  //     const tokens = await oauth.getAccessToken(
-  //       req.query.code,
-  //       // req.body.fields.callback_uri
-  //     );
-  //     res.json(tokens);
-  //   } catch (err) {
-  //     res.status(401).json({ message: "Unauthorizedb" });
-  //   }
-  // });
-
   app.post("/oauth2/v1/access_token", async (req, res) => {
     console.log("POST /oauth2/v1/access_token");
     console.log("req.query: ", req.query);
     console.log("req.body: ", req.body);
     console.log("req.body.fields.callback_uri: ", req.body.fields.callback_uri);
     try {
-      const tokens = await oauth.getAccessToken(req.body.code, req.body.fields.callback_uri);
+      const tokens = await oauth.getAccessToken(
+        req.body.code,
+        req.body.fields.callback_uri
+      );
       res.json(tokens);
     } catch (err) {
       res.status(401).json({ message: "Unauthorizedb" });

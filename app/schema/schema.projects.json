@@ -1,0 +1,77 @@
+{
+  "id": {
+    "type": "id",
+    "name": "Id",
+    "path": "id"
+  },
+  "name": {
+    "type": "text",
+    "name": "Name",
+    "path": "name"
+  },
+  "parent_id": {
+    "type": "text",
+    "name": "Parent Id",
+    "relation": {
+      "cardinality": "many-to-many",
+      "name": "Parent Project",
+      "targetName": "Project",
+      "targetType": "project",
+      "targetFieldId": "id"
+    },
+    "path": "parent_id"
+  },
+  "child_order": {
+    "type": "number",
+    "name": "Child Order",
+    "subType": "integer",
+    "path": "child_order"
+  },
+  "collapsed": {
+    "type": "text",
+    "name": "Collapsed",
+    "subType": "boolean",
+    "path": "collapsed"
+  },
+  "shared": {
+    "type": "text",
+    "name": "Shared",
+    "subType": "boolean",
+    "path": "shared"
+  },
+  "is_deleted": {
+    "type": "text",
+    "name": "Is Deleted",
+    "subType": "boolean",
+    "path": "is_deleted"
+  },
+  "is_archived": {
+    "type": "text",
+    "name": "Is Archived",
+    "subType": "boolean",
+    "path": "is_archived"
+  },
+  "is_favorite": {
+    "type": "text",
+    "name": "Is Favorite",
+    "subType": "boolean",
+    "path": "is_favorite"
+  },
+  "inbox_project": {
+    "type": "text",
+    "name": "Inbox Project",
+    "subType": "boolean",
+    "path": "inbox_project"
+  },
+  "team_inbox": {
+    "type": "text",
+    "name": "Team Project",
+    "subType": "boolean",
+    "path": "team_inbox"
+  },
+  "view_style": {
+    "type": "text",
+    "name": "View Style",
+    "path": "view_style"
+  }
+}

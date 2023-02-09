@@ -1,0 +1,30 @@
+{
+  "id": {
+    "type": "id",
+    "name": "Id",
+    "path": "id"
+  },
+  "name": {
+    "type": "text",
+    "name": "Name",
+    "path": "name"
+  },
+  "item_order": {
+    "type": "number",
+    "name": "Item Order",
+    "subType": "integer",
+    "path": "item_order"
+  },
+  "is_favorite": {
+    "type": "text",
+    "name": "Is Favorite",
+    "subType": "boolean",
+    "path": "is_favorite"
+  },
+  "is_deleted": {
+    "type": "text",
+    "name": "Is Deleted",
+    "subType": "boolean",
+    "path": "is_deleted"
+  }
+}

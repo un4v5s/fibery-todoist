@@ -1,0 +1,158 @@
+{
+  "id": {
+    "type": "id",
+    "name": "Id",
+    "path": "id"
+  },
+  "user_id": {
+    "type": "text",
+    "name": "Owner",
+    "relation": {
+      "cardinality": "many-to-one",
+      "name": "User",
+      "targetName": "Items",
+      "targetType": "user",
+      "targetFieldId": "id"
+    },
+    "path": "user_id"
+  },
+  "project_id": {
+    "type": "text",
+    "name": "Project Id",
+    "relation": {
+      "cardinality": "many-to-one",
+      "name": "Project",
+      "targetName": "Items",
+      "targetType": "project",
+      "targetFieldId": "id"
+    },
+    "path": "project_id"
+  },
+  "name": {
+    "type": "text",
+    "name": "Name",
+    "path": "content"
+  },
+  "description": {
+    "type": "text",
+    "name": "Description",
+    "subType": "md",
+    "path": "description"
+  },
+  "priority": {
+    "type": "number",
+    "name": "Priority",
+    "subType": "integer",
+    "path": "priority"
+  },
+  "parent_id": {
+    "type": "text",
+    "name": "Parent Id",
+    "relation": {
+      "cardinality": "many-to-many",
+      "name": "Parent Item",
+      "targetName": "Items",
+      "targetType": "item",
+      "targetFieldId": "id"
+    },
+    "path": "parent_id"
+  },
+  "child_order": {
+    "type": "number",
+    "name": "Child Order",
+    "subType": "integer",
+    "path": "child_order"
+  },
+  "day_order": {
+    "type": "number",
+    "name": "Day Order",
+    "subType": "integer",
+    "path": "day_order"
+  },
+  "collapsed": {
+    "type": "text",
+    "name": "Collapsed",
+    "subType": "boolean",
+    "path": "collapsed"
+  },
+  "labels": {
+    "type": "text",
+    "name": "Labels",
+    "relation": {
+      "cardinality": "many-to-many",
+      "name": "Label",
+      "targetName": "Items",
+      "targetType": "label",
+      "targetFieldId": "name"
+    },
+    "path": "labels"
+  },
+  "added_by_uid": {
+    "type": "text",
+    "name": "Added By",
+    "relation": {
+      "cardinality": "one-to-many",
+      "name": "User Id",
+      "targetName": "Items",
+      "targetType": "user",
+      "targetFieldId": "id"
+    },
+    "path": "added_by_uid"
+  },
+  "assigned_by_uid": {
+    "type": "text",
+    "name": "Assigned By",
+    "relation": {
+      "cardinality": "one-to-many",
+      "name": "Assigned By User",
+      "targetName": "Items",
+      "targetType": "user",
+      "targetFieldId": "id"
+    },
+    "path": "assigned_by_uid"
+  },
+  "responsible_uid": {
+    "type": "text",
+    "name": "Responsible",
+    "relation": {
+      "cardinality": "one-to-many",
+      "name": "Responsible User",
+      "targetName": "Items",
+      "targetType": "user",
+      "targetFieldId": "id"
+    },
+    "path": "responsible_uid"
+  },
+  "checked": {
+    "type": "text",
+    "name": "Checked",
+    "subType": "boolean",
+    "path": "checked"
+  },
+  "is_deleted": {
+    "type": "text",
+    "name": "Is Deleted",
+    "subType": "boolean",
+    "path": "is_deleted"
+  },
+  "sync_id": {
+    "type": "text",
+    "name": "Sync Id",
+    "path": "sync_id"
+  },
+  "completed_at": {
+    "type": "date",
+    "name": "Completed At",
+    "path": "completed_at"
+  },
+  "added_at": {
+    "type": "date",
+    "name": "Added At",
+    "path": "added_at"
+  },
+  "__syncAction": {
+    "type": "text",
+    "name": "Sync Action",
+    "path": "__syncAction"
+  }
+}

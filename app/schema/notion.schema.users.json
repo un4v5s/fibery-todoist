@@ -7,17 +7,17 @@
   "name": {
     "type": "text",
     "name": "Name",
-    "path": "full_name"
+    "path": "name"
+  },
+  "type": {
+    "type": "text",
+    "name": "Type",
+    "path": "type"
   },
   "email": {
     "type": "text",
     "name": "Email",
-    "subType": "email",
-    "path": "email"
-  },
-  "timezone": {
-    "type": "text",
-    "name": "Time Zone",
-    "path": "timezone"
+    "path": "person.email",
+    "subType": "email"
   }
 }
