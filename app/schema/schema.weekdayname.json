@@ -1,0 +1,20 @@
+
+{
+  "id": {
+    "name": "Id",
+    "type": "id"
+  },
+  "name": {
+    "name": "Name",
+    "type": "text"
+  },
+  "abbreviation_name": {
+    "name": "Abbreviation Name",
+    "type": "text"
+  },
+  "weekdaynumber": {
+    "name": "Week Day Number",
+    "type": "number",
+    "subType": "integer"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "id": {
+    "name": "Id",
+    "type": "id"
+  },
+  "name": {
+    "name": "Name",
+    "type": "text"
+  },
+  "month_number": {
+    "name": "Month Number",
+    "type": "number",
+    "subType": "integer"
+  },
+  "date_range": {
+    "name": "Date Range",
+    "type": "text",
+    "subType": "date-range"
+  }
+}

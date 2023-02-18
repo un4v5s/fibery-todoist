@@ -4,9 +4,8 @@ const statusRoute = require(`./status`);
 const path = require(`path`);
 const { connector } = require(`./connector.config`);
 const _ = require(`lodash`);
-// const notion = require(`./api/notion.api`);
 const todoist = require(`./api/todoist.api`);
-
+const got = require(`got`);
 const morgan = require("morgan");
 const oauth = require("./oauth");
 
@@ -49,30 +48,51 @@ module.exports = function () {
     )
   );
 
+  // root
   app.get(`/`, (req, res) => {
     res.json(connector());
   });
   app.get(`/logo`, (req, res) =>
     res.sendFile(path.resolve(__dirname, `logo.svg`))
   );
+
+  // setup endpoints
   app.post(`/api/v1/synchronizer/config`, (req, res) => {
     console.log("/api/v1/synchronizer/config");
+    console.log("req: ", req.body);
     if (_.isEmpty(req.body.account)) {
       throw new Error(`account should be provided`);
     }
-    // promiseToResponse(res, notion.config(req.body));
+
+    // process
     promiseToResponse(res, todoist.config(req.body));
   });
   app.post(`/api/v1/synchronizer/schema`, (req, res) => {
     console.log("/api/v1/synchronizer/schema");
-    // promiseToResponse(res, notion.schema(req.body))
+    console.log("req: ", req.body);
     promiseToResponse(res, todoist.schema(req.body));
   });
+  app.post(`/api/v1/synchronizer/datalist`, async (req, res) => {
+    const timezones = await got.get("http://worldtimeapi.org/api/timezone").json();
+    console.log("timezones: ", timezones);
+
+    // cannot use multiple datalist
+    // const areas = _.chain(timezones).map(e => e.split("/")[0]).uniq().value();
+
+    const items = timezones.map((row) => ({title: row, value: row}));
+    console.log("items: ", items);
+    res.json({items});
+  });
+
+
+  // data endpoint
   app.post(`/api/v1/synchronizer/data`, (req, res) => {
     console.log("/api/v1/synchronizer/data");
     // promiseToResponse(res, notion.data(req.body))
     promiseToResponse(res, todoist.data(req.body));
   });
+
+  // oauth2 endpoints
   app.post("/oauth2/v1/authorize", (req, res) => {
     console.log("POST /oauth2/v1/authorize req.body: ", req.body);
     try {
@@ -83,7 +103,6 @@ module.exports = function () {
       res.status(401).json({ message: `Unauthorizeda` });
     }
   });
-
   app.post("/oauth2/v1/access_token", async (req, res) => {
     console.log("POST /oauth2/v1/access_token");
     console.log("req.query: ", req.query);
@@ -103,3 +122,5 @@ module.exports = function () {
   app.get(`/status`, statusRoute);
   return app;
 };
+
+

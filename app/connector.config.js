@@ -12,6 +12,24 @@ const OAuth2 = {
       type: "oauth",
       id: "callback_uri",
     },
+    {
+      type: `text`,
+      name: `Your Domain`,
+      description: `Provide Your Fibery Account Domain`,
+      id: "domain",
+    },
+    {
+      type: `password`,
+      name: `API Token`,
+      description: `Provide Fibery API Token`,
+      id: `api_key`,
+    },
+    {
+      type: "link",
+      id: "link",
+      name: "Get API Token from below url.",
+      value: "https://ooooo.fibery.io/api/tokens",
+    },
   ],
 };
 

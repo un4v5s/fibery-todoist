@@ -1,0 +1,26 @@
+{
+  "id": {
+    "name": "Id",
+    "type": "id"
+  },
+  "name": {
+    "name": "Name",
+    "type": "text"
+  },
+  "mmdd": {
+    "name": "MMDD",
+    "type": "text"
+  },
+  "date": {
+    "name": "Date",
+    "type": "date"
+  },
+  "weekdayname": {
+    "name": "Week Day Name",
+    "type": "text"
+  },
+  "abbreviation_weekdayname": {
+    "name": "Abbreviation Week Day Name",
+    "type": "text"
+  }
+}

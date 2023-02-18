@@ -19,7 +19,7 @@ module.exports = {
           `${encodeURIComponent(key)}=${encodeURIComponent(queryParams[key])}`
       )
       .join(`&`);
-      console.log(`https://todoist.com/oauth/authorize?${queryParamsStr}`);
+    console.log(`https://todoist.com/oauth/authorize?${queryParamsStr}`);
     return `https://todoist.com/oauth/authorize?${queryParamsStr}`;
   },
 
@@ -31,7 +31,7 @@ module.exports = {
           client_id: CLIENT_ID,
           client_secret: CLIENT_SECRET,
           code,
-          redirect_uri: callbackUri
+          redirect_uri: callbackUri,
         },
       })
       .json();

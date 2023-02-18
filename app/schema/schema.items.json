@@ -4,12 +4,22 @@
     "name": "Id",
     "path": "id"
   },
+  "name": {
+    "type": "text",
+    "name": "Name",
+    "path": "content"
+  },
+  "date_due_or_completed": {
+    "type": "date",
+    "name": "Date Due or Completed",
+    "path": "due.date"
+  },
   "user_id": {
     "type": "text",
     "name": "Owner",
     "relation": {
       "cardinality": "many-to-one",
-      "name": "User",
+      "name": "Owner",
       "targetName": "Items",
       "targetType": "user",
       "targetFieldId": "id"
@@ -18,7 +28,7 @@
   },
   "project_id": {
     "type": "text",
-    "name": "Project Id",
+    "name": "Project",
     "relation": {
       "cardinality": "many-to-one",
       "name": "Project",
@@ -27,11 +37,6 @@
       "targetFieldId": "id"
     },
     "path": "project_id"
-  },
-  "name": {
-    "type": "text",
-    "name": "Name",
-    "path": "content"
   },
   "description": {
     "type": "text",
@@ -47,7 +52,7 @@
   },
   "parent_id": {
     "type": "text",
-    "name": "Parent Id",
+    "name": "Parent Item",
     "relation": {
       "cardinality": "many-to-many",
       "name": "Parent Item",
@@ -80,7 +85,7 @@
     "name": "Labels",
     "relation": {
       "cardinality": "many-to-many",
-      "name": "Label",
+      "name": "Labels",
       "targetName": "Items",
       "targetType": "label",
       "targetFieldId": "name"
@@ -92,7 +97,7 @@
     "name": "Added By",
     "relation": {
       "cardinality": "one-to-many",
-      "name": "User Id",
+      "name": "Added By",
       "targetName": "Items",
       "targetType": "user",
       "targetFieldId": "id"
@@ -104,7 +109,7 @@
     "name": "Assigned By",
     "relation": {
       "cardinality": "one-to-many",
-      "name": "Assigned By User",
+      "name": "Assigned By",
       "targetName": "Items",
       "targetType": "user",
       "targetFieldId": "id"
@@ -150,9 +155,63 @@
     "name": "Added At",
     "path": "added_at"
   },
-  "__syncAction": {
+  "due_date": {
+    "type": "date",
+    "name": "Due Date",
+    "path": "due.date"
+  },
+  "is_recurring": {
     "type": "text",
-    "name": "Sync Action",
-    "path": "__syncAction"
+    "name": "Is Recurring",
+    "subType": "boolean",
+    "path": "due.is_recurring"
+  },
+  "date": {
+    "type": "text",
+    "name": "Date",
+    "relation": {
+      "cardinality": "many-to-one",
+      "name": "Date",
+      "targetName": "Items",
+      "targetType": "date",
+      "targetFieldId": "id"
+    },
+    "path": "date"
+  },
+  "week": {
+    "type": "text",
+    "name": "Week",
+    "relation": {
+      "cardinality": "many-to-one",
+      "name": "Week",
+      "targetName": "Items",
+      "targetType": "week",
+      "targetFieldId": "id"
+    },
+    "path": "week"
+  },
+  "month": {
+    "type": "text",
+    "name": "Month",
+    "relation": {
+      "cardinality": "many-to-one",
+      "name": "Month",
+      "targetName": "Items",
+      "targetType": "month",
+      "targetFieldId": "id"
+    },
+    "path": "month"
+  },
+  "weekdayname": {
+    "type": "text",
+    "name": "Week Day Name",
+    "relation": {
+      "cardinality": "many-to-one",
+      "name": "Week Day Name",
+      "targetName": "Items",
+      "targetType": "weekdayname",
+      "targetFieldId": "id"
+    },
+    "path": "weekdayname"
   }
 }
