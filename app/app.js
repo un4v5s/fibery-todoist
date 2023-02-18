@@ -72,17 +72,18 @@ module.exports = function () {
     console.log("req: ", req.body);
     promiseToResponse(res, todoist.schema(req.body));
   });
-  app.post(`/api/v1/synchronizer/datalist`, async (req, res) => {
-    const timezones = await got.get("http://worldtimeapi.org/api/timezone").json();
-    console.log("timezones: ", timezones);
+  
+  // app.post(`/api/v1/synchronizer/datalist`, async (req, res) => {
+  //   const timezones = await got.get("http://worldtimeapi.org/api/timezone").json();
+  //   console.log("timezones: ", timezones);
 
-    // cannot use multiple datalist
-    // const areas = _.chain(timezones).map(e => e.split("/")[0]).uniq().value();
+  //   // cannot use multiple datalist
+  //   // const areas = _.chain(timezones).map(e => e.split("/")[0]).uniq().value();
 
-    const items = timezones.map((row) => ({title: row, value: row}));
-    console.log("items: ", items);
-    res.json({items});
-  });
+  //   const items = timezones.map((row) => ({title: row, value: row}));
+  //   console.log("items: ", items);
+  //   res.json({items});
+  // });
 
 
   // data endpoint
