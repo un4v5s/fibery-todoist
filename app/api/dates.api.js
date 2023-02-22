@@ -11,10 +11,17 @@ dayjs.extend(require("dayjs/plugin/timezone"));
 
 module.exports.getDates = ({ filter, requestedType }) => {
   const { from, monthrange = 3 } = filter ?? {};
-  const startDate = from ? dayjs(from) : dayjs().subtract(monthrange, "month");
-  const endDate = dayjs().add(monthrange, "month");
+  console.log("from: ", from);
+  const startDate = from ? dayjs(from).startOf('day') : dayjs().startOf('day').subtract(monthrange, "month");
+  // console.log("startDate1: ", startDate.format());
+  // // startDate.tz("Asia/Tokyo");
+  // console.log("startDate2: ", startDate.tz("Asia/Tokyo").format());
+
+  const endDate = dayjs().add(monthrange, "month").startOf('day');
   const dates = [];
-  let currentDate = startDate;
+  console.log("startDate: ", startDate.format());
+  console.log("endDate: ", endDate.format());
+  let currentDate = startDate.clone();
 
   switch (requestedType) {
     case "date":
@@ -23,7 +30,7 @@ module.exports.getDates = ({ filter, requestedType }) => {
           id: uuid("date_" + currentDate.format("YYYY-MM-DD")),
           name: currentDate.format("YYYY-MM-DD"),
           mmdd: currentDate.format("MM/DD"),
-          date: currentDate.format("YYYY-MM-DD"),
+          date: currentDate.startOf('day').format(),
           weekdayname: currentDate.format("dddd"),
           abbreviation_weekdayname: currentDate.format("ddd"),
         });
@@ -142,7 +149,7 @@ module.exports.getDateRelation = ({
     return null;
   }
   const date_due_or_completed = dayjs(tmp_date).utc().format();
-  console.log("date_due_or_completed: ", date_due_or_completed);
+  // console.log("date_due_or_completed: ", date_due_or_completed);
 
   switch (requestedType) {
     case "date":
@@ -154,12 +161,11 @@ module.exports.getDateRelation = ({
       return weeks
         .filter((w) => {
           return dayjs(date_due_or_completed).isBetween(
-            w.date_range_json.start,
-            w.date_range_json.end,
+            dayjs(w.date_range_json.start),
+            dayjs(w.date_range_json.end),
             "day",
             "[]"
           );
-          // w.date_range_json.start <= date_due_or_completed && date_due_or_completed <= w.date_range_json.end
         })
         .map((e) => e.id);
 

@@ -261,9 +261,12 @@ const processItem = ({ schema, item, requestedType, filter }) => {
 
     // adjust date as UTC
     if(["due_date", "completed_at", "date_due_or_completed"].includes(id)){
-      
       const value = getValue(item, schemaValue);
-      r[id] = dayjs(value).utc().format();
+      if(!_.isEmpty(value)){
+        r[id] = dayjs(value).utc().format();
+      }else{
+        r[id] = null;
+      }
     
     // set relations
     }else if (["date", "week", "month", "weekdayname"].includes(id)) {
