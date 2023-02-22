@@ -72,18 +72,24 @@ module.exports = function () {
     console.log("req: ", req.body);
     promiseToResponse(res, todoist.schema(req.body));
   });
-  
-  // app.post(`/api/v1/synchronizer/datalist`, async (req, res) => {
-  //   const timezones = await got.get("http://worldtimeapi.org/api/timezone").json();
-  //   console.log("timezones: ", timezones);
 
-  //   // cannot use multiple datalist
-  //   // const areas = _.chain(timezones).map(e => e.split("/")[0]).uniq().value();
+  app.post(`/api/v1/synchronizer/datalist`, async (req, res) => {
+    const timezones = await got.get("http://worldtimeapi.org/api/timezone").json();
+    // console.log("timezones: ", timezones);
+    // const items = timezones.map((row) => ({title: row, value: row}));
 
-  //   const items = timezones.map((row) => ({title: row, value: row}));
-  //   console.log("items: ", items);
-  //   res.json({items});
-  // });
+    const user = await todoist.getUser(req.body.account);
+    console.log("user: ", user);
+    const user_timezone = user.tz_info.timezone;
+    const user_tz = {title: user_timezone + "(Todoist user timezone)", value: user_timezone};
+
+    // timezones.default from timezones-list library
+    const timezones_collection = timezones.map((e) => ({title: e, value: e}));
+    const items = [user_tz, ...timezones_collection];
+
+    // console.log("items: ", items);
+    res.json({items})
+  });
 
 
   // data endpoint

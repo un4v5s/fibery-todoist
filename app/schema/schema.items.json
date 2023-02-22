@@ -213,5 +213,11 @@
       "targetFieldId": "id"
     },
     "path": "weekdayname"
+  },
+  "url": {
+    "type": "text",
+    "name": "URL",
+    "subType": "url",
+    "path": "url"
   }
 }

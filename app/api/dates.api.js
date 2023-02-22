@@ -3,12 +3,11 @@ const uuid = require(`uuid-by-string`);
 require(`dotenv`).config();
 
 const dayjs = require("dayjs");
-const isoWeek = require("dayjs/plugin/isoWeek");
-const advancedFormat = require("dayjs/plugin/advancedFormat");
-const isBetween = require("dayjs/plugin/isBetween");
-dayjs.extend(isoWeek);
-dayjs.extend(advancedFormat);
-dayjs.extend(isBetween);
+dayjs.extend(require("dayjs/plugin/isoWeek"));
+dayjs.extend(require("dayjs/plugin/advancedFormat"));
+dayjs.extend(require("dayjs/plugin/isBetween"));
+dayjs.extend(require("dayjs/plugin/utc"));
+dayjs.extend(require("dayjs/plugin/timezone"));
 
 module.exports.getDates = ({ filter, requestedType }) => {
   const { from, monthrange = 3 } = filter ?? {};
@@ -129,7 +128,7 @@ module.exports.getWeekDayNames = () => {
 //   "lang": "en",
 //   "is_recurring": true
 // }
-module.exports.getDateRelationValue = ({
+module.exports.getDateRelation = ({
   requestedType,
   item,
   dates,
@@ -137,13 +136,13 @@ module.exports.getDateRelationValue = ({
   months,
   weekdaynames,
 }) => {
-  // console.log("item: ", item);
-  const date_due_or_completed = item.due?.date ?? item.completed_at ?? null;
-  // console.log("date_due_or_completed: ", date_due_or_completed);
-  if (_.isEmpty(date_due_or_completed)) {
+  console.log(item.content);
+  const tmp_date = item.completed_at ?? item.due?.date ?? null;
+  if (_.isEmpty(tmp_date)) {
     return null;
   }
-  // const date = dayjs(date_due_or_completed);
+  const date_due_or_completed = dayjs(tmp_date).utc().format();
+  console.log("date_due_or_completed: ", date_due_or_completed);
 
   switch (requestedType) {
     case "date":

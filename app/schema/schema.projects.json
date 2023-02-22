@@ -73,5 +73,11 @@
     "type": "text",
     "name": "View Style",
     "path": "view_style"
+  },
+  "url": {
+    "type": "text",
+    "name": "URL",
+    "subType": "url",
+    "path": "url"
   }
 }

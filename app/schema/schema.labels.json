@@ -26,5 +26,11 @@
     "name": "Is Deleted",
     "subType": "boolean",
     "path": "is_deleted"
+  },
+  "url": {
+    "type": "text",
+    "name": "URL",
+    "subType": "url",
+    "path": "url"
   }
 }
