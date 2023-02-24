@@ -7,9 +7,6 @@ const got = require("got");
 require(`dotenv`).config();
 
 const dayjs = require("dayjs");
-// const isoWeek = require("dayjs/plugin/isoWeek");
-// const advancedFormat = require("dayjs/plugin/advancedFormat");
-// const isBetween = require("dayjs/plugin/isBetween");
 dayjs.extend(require("dayjs/plugin/isoWeek"));
 dayjs.extend(require("dayjs/plugin/advancedFormat"));
 dayjs.extend(require("dayjs/plugin/isBetween"));
@@ -116,8 +113,8 @@ module.exports.validate = async (account) => {
 const getTypes = () => {
   return [
     { id: "project", name: "TD Project" },
-    { id: "item", name: "TD Item" },
-    { id: "completed_item", name: "TD Completed Item" },
+    { id: "item", name: "TD Task" },
+    { id: "completed_item", name: "TD Completed Task" },
     { id: "label", name: "TD Label" },
     { id: "user", name: "TD User" },
     { id: "date", name: "TD Date" },
@@ -131,25 +128,25 @@ module.exports.config = async ({ account, pageSize }) => {
   console.log("config: account: ", account);
   const types = getTypes();
   const filters = [
-    {
-      id: "timezone",
-      title: "Select Timezone",
-      datalist: true,
-      optional: false,
-      type: "list",
-    },
-    {
-      id: "from",
-      type: "date",
-      title: "Start Absolute Date",
-      optional: true,
-    },
-    {
-      id: "monthrange",
-      type: "number",
-      title: "Months to Sync before and after (by default 3 months)",
-      optional: true,
-    },
+    // {
+    //   id: "timezone",
+    //   title: "Select Timezone",
+    //   datalist: true,
+    //   optional: false,
+    //   type: "list",
+    // },
+    // {
+    //   id: "from",
+    //   type: "date",
+    //   title: "Start Absolute Date",
+    //   optional: true,
+    // },
+    // {
+    //   id: "monthrange",
+    //   type: "number",
+    //   title: "Months to Sync before and after (by default 3 months)",
+    //   optional: true,
+    // },
   ];
   // return { types, filters, webhooks: { enabled: true } };
   return { types, filters };
@@ -157,50 +154,9 @@ module.exports.config = async ({ account, pageSize }) => {
 
 const cloneDeepSchema = (schema) => _.cloneDeep(schema);
 
-// const cleanRelationsDuplication = (schema) => {
-//   _.keys(schema).forEach((id) => {
-//     const typeSchema = schema[id];
-//     _.keys(typeSchema).forEach((schemaFieldId) => {
-//       const field = typeSchema[schemaFieldId];
-//       if (!field) {
-//         return;
-//       }
-//       if (!field.relation) {
-//         return;
-//       }
-//       const { targetType, name, targetName } = field.relation;
-//       const targetSchemaDatabase = schema[targetType];
-//       if (_.isEmpty(targetSchemaDatabase)) {
-//         delete typeSchema[schemaFieldId];
-//         return;
-//       }
-//       const relationDuplicationId = _(targetSchemaDatabase)
-//         .keys()
-//         .find((fieldId) => {
-//           const targetField = targetSchemaDatabase[fieldId];
-//           if (!targetField.relation) {
-//             return false;
-//           }
-//           if (targetField.relation.targetType !== id) {
-//             return false;
-//           }
-//           return (
-//             targetField.relation.name === targetName &&
-//             targetField.relation.targetName === name
-//           );
-//         });
-//       if (relationDuplicationId) {
-//         if (id !== targetType && relationDuplicationId !== schemaFieldId) {
-//           delete targetSchemaDatabase[relationDuplicationId];
-//         }
-//       }
-//     });
-//   });
-// };
-
 module.exports.schema = async ({ account, types }) => {
   // console.log("schema: account: ", account);
-  console.log("schema: types: ", types);
+  // console.log("schema: types: ", types);
   const schema = {};
   types.forEach((id) => {
     schema[id] = cloneDeepSchema(schemas[id]);
@@ -211,8 +167,6 @@ module.exports.schema = async ({ account, types }) => {
 
 const getValue = (row, { path, arrayPath, subPath = `` }) => {
   let v = null;
-  if (path === "date") {
-  }
 
   const paths = _.isArray(path) ? path : [path];
   paths.forEach((p) => {
@@ -246,15 +200,20 @@ const getValue = (row, { path, arrayPath, subPath = `` }) => {
   return v;
 };
 
+const getStatus = ({requestedType}) => {
+  if (requestedType=="item") {
+    return "Open";
+  }else if(requestedType=="completed_item"){
+    return "Done"
+  }
+}
+
 const processItem = ({ schema, item, requestedType, filter }) => {
   const r = {};
   const dates = datesApi.getDates({ filter: {}, requestedType: "date" });
   const weeks = datesApi.getDates({ filter: {}, requestedType: "week" });
   const months = datesApi.getDates({ filter: {}, requestedType: "month" });
   const weekdaynames = datesApi.getWeekDayNames();
-
-  const timezone_from_filter = filter?.timezone ?? "Etc/UTC";
-  console.log("timezone_from_filter: ", timezone_from_filter);
 
   _.keys(schema).forEach((id) => {
     const schemaValue = schema[id];
@@ -279,6 +238,10 @@ const processItem = ({ schema, item, requestedType, filter }) => {
         weekdaynames,
       });
     
+    // status field is set as workflow type
+    }else if("status" == id){
+      r[id] = getStatus({ requestedType });
+
     // set urls
     } else if (id == "url") {
       if (requestedType == "item") {
@@ -339,6 +302,7 @@ const getDateData = ({ account, filter, requestedType }) => {
       return [];
   }
 };
+
 
 module.exports.data = async ({ account, filter, requestedType }) => {
   console.log("filter: ", filter);

@@ -20,7 +20,7 @@
     "relation": {
       "cardinality": "many-to-one",
       "name": "Owner",
-      "targetName": "Items",
+      "targetName": "Tasks",
       "targetType": "user",
       "targetFieldId": "id"
     },
@@ -32,7 +32,7 @@
     "relation": {
       "cardinality": "many-to-one",
       "name": "Project",
-      "targetName": "Items",
+      "targetName": "Tasks",
       "targetType": "project",
       "targetFieldId": "id"
     },
@@ -52,21 +52,15 @@
   },
   "parent_id": {
     "type": "text",
-    "name": "Parent Item",
+    "name": "Parent Task",
     "relation": {
       "cardinality": "many-to-many",
-      "name": "Parent Item",
-      "targetName": "Items",
-      "targetType": "item",
+      "name": "Parent Task",
+      "targetName": "Sub Tasks",
+      "targetType": "task",
       "targetFieldId": "id"
     },
     "path": "parent_id"
-  },
-  "child_order": {
-    "type": "number",
-    "name": "Child Order",
-    "subType": "integer",
-    "path": "child_order"
   },
   "day_order": {
     "type": "number",
@@ -74,19 +68,13 @@
     "subType": "integer",
     "path": "day_order"
   },
-  "collapsed": {
-    "type": "text",
-    "name": "Collapsed",
-    "subType": "boolean",
-    "path": "collapsed"
-  },
   "labels": {
     "type": "text",
     "name": "Labels",
     "relation": {
       "cardinality": "many-to-many",
       "name": "Labels",
-      "targetName": "Items",
+      "targetName": "Tasks",
       "targetType": "label",
       "targetFieldId": "name"
     },
@@ -98,7 +86,7 @@
     "relation": {
       "cardinality": "one-to-many",
       "name": "Added By",
-      "targetName": "Items",
+      "targetName": "Tasks",
       "targetType": "user",
       "targetFieldId": "id"
     },
@@ -110,7 +98,7 @@
     "relation": {
       "cardinality": "one-to-many",
       "name": "Assigned By",
-      "targetName": "Items",
+      "targetName": "Tasks",
       "targetType": "user",
       "targetFieldId": "id"
     },
@@ -122,28 +110,17 @@
     "relation": {
       "cardinality": "one-to-many",
       "name": "Responsible User",
-      "targetName": "Items",
+      "targetName": "Tasks",
       "targetType": "user",
       "targetFieldId": "id"
     },
     "path": "responsible_uid"
-  },
-  "checked": {
-    "type": "text",
-    "name": "Checked",
-    "subType": "boolean",
-    "path": "checked"
   },
   "is_deleted": {
     "type": "text",
     "name": "Is Deleted",
     "subType": "boolean",
     "path": "is_deleted"
-  },
-  "sync_id": {
-    "type": "text",
-    "name": "Sync Id",
-    "path": "sync_id"
   },
   "completed_at": {
     "type": "date",
@@ -172,7 +149,7 @@
     "relation": {
       "cardinality": "many-to-one",
       "name": "Date",
-      "targetName": "Items",
+      "targetName": "Tasks",
       "targetType": "date",
       "targetFieldId": "id"
     },
@@ -184,7 +161,7 @@
     "relation": {
       "cardinality": "many-to-one",
       "name": "Week",
-      "targetName": "Items",
+      "targetName": "Tasks",
       "targetType": "week",
       "targetFieldId": "id"
     },
@@ -196,7 +173,7 @@
     "relation": {
       "cardinality": "many-to-one",
       "name": "Month",
-      "targetName": "Items",
+      "targetName": "Tasks",
       "targetType": "month",
       "targetFieldId": "id"
     },
@@ -208,7 +185,7 @@
     "relation": {
       "cardinality": "many-to-one",
       "name": "Week Day Name",
-      "targetName": "Items",
+      "targetName": "Tasks",
       "targetType": "weekdayname",
       "targetFieldId": "id"
     },
@@ -219,5 +196,11 @@
     "name": "URL",
     "subType": "url",
     "path": "url"
+  },
+  "status": {
+    "type": "text",
+    "name": "Status",
+    "subType": "workflow",
+    "path": "checked"
   }
 }

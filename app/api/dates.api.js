@@ -11,16 +11,13 @@ dayjs.extend(require("dayjs/plugin/timezone"));
 
 module.exports.getDates = ({ filter, requestedType }) => {
   const { from, monthrange = 3 } = filter ?? {};
-  console.log("from: ", from);
+  // console.log("from: ", from);
   const startDate = from ? dayjs(from).startOf('day') : dayjs().startOf('day').subtract(monthrange, "month");
-  // console.log("startDate1: ", startDate.format());
-  // // startDate.tz("Asia/Tokyo");
-  // console.log("startDate2: ", startDate.tz("Asia/Tokyo").format());
 
   const endDate = dayjs().add(monthrange, "month").startOf('day');
   const dates = [];
-  console.log("startDate: ", startDate.format());
-  console.log("endDate: ", endDate.format());
+  // console.log("startDate: ", startDate.format());
+  // console.log("endDate: ", endDate.format());
   let currentDate = startDate.clone();
 
   switch (requestedType) {
@@ -143,7 +140,7 @@ module.exports.getDateRelation = ({
   months,
   weekdaynames,
 }) => {
-  console.log(item.content);
+  // console.log(item.content);
   const tmp_date = item.completed_at ?? item.due?.date ?? null;
   if (_.isEmpty(tmp_date)) {
     return null;

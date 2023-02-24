@@ -13,6 +13,13 @@ const OAuth2 = {
       id: "callback_uri",
     },
     {
+      type: `link`,
+      name: ``,
+      description: `(Optional) If you want to generate suggested view automatically, Please enter Domain and Fibery API Token by fill below fields`,
+      id: "a",
+      value: "a"
+    },
+    {
       type: `text`,
       name: `Your Domain`,
       description: `Provide Your Fibery Account Domain`,
@@ -27,7 +34,7 @@ const OAuth2 = {
     {
       type: "link",
       id: "link",
-      name: "Get API Token from below url.",
+      name: "Get Fibery API Token from url below.",
       value: "https://ooooo.fibery.io/api/tokens",
     },
   ],

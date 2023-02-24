@@ -112,9 +112,6 @@ module.exports = function () {
   });
   app.post("/oauth2/v1/access_token", async (req, res) => {
     console.log("POST /oauth2/v1/access_token");
-    console.log("req.query: ", req.query);
-    console.log("req.body: ", req.body);
-    console.log("req.body.fields.callback_uri: ", req.body.fields.callback_uri);
     try {
       const tokens = await oauth.getAccessToken(
         req.body.code,

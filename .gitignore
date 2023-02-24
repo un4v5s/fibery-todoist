@@ -85,4 +85,5 @@ etc/
 etc/*
 app/schema/notion*.json
 app/schema/old_*.json
+app/schema/full_*.json
 app/api/notion.js

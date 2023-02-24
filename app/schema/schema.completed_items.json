@@ -101,5 +101,11 @@
     "name": "URL",
     "subType": "url",
     "path": "id"
+  },
+  "status": {
+    "type": "text",
+    "name": "Status",
+    "subType": "workflow",
+    "path": "checked"
   }
 }
