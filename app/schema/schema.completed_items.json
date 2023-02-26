@@ -28,10 +28,10 @@
   },
   "project_id": {
     "type": "text",
-    "name": "Project",
+    "name": "TD Project",
     "relation": {
       "cardinality": "many-to-one",
-      "name": "Project",
+      "name": "TD Project",
       "targetName": "Completed Items",
       "targetType": "project",
       "targetFieldId": "id"
@@ -50,10 +50,10 @@
   },
   "date": {
     "type": "text",
-    "name": "Date",
+    "name": "TD Date",
     "relation": {
       "cardinality": "many-to-one",
-      "name": "Date",
+      "name": "TD Date",
       "targetName": "Completed Items",
       "targetType": "date",
       "targetFieldId": "id"
@@ -62,10 +62,10 @@
   },
   "week": {
     "type": "text",
-    "name": "Week",
+    "name": "TD Week",
     "relation": {
       "cardinality": "many-to-one",
-      "name": "Week",
+      "name": "TD Week",
       "targetName": "Completed Items",
       "targetType": "week",
       "targetFieldId": "id"
@@ -74,10 +74,10 @@
   },
   "month": {
     "type": "text",
-    "name": "Month",
+    "name": "TD Month",
     "relation": {
       "cardinality": "many-to-one",
-      "name": "Month",
+      "name": "TD Month",
       "targetName": "Completed Items",
       "targetType": "month",
       "targetFieldId": "id"
@@ -86,10 +86,10 @@
   },
   "weekdayname": {
     "type": "text",
-    "name": "Week Day Name",
+    "name": "TD Week Day Name",
     "relation": {
       "cardinality": "many-to-one",
-      "name": "Week Day Name",
+      "name": "TD Week Day Name",
       "targetName": "Completed Items",
       "targetType": "weekdayname",
       "targetFieldId": "id"

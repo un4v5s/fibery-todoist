@@ -20,7 +20,7 @@
     "relation": {
       "cardinality": "many-to-one",
       "name": "Owner",
-      "targetName": "Tasks",
+      "targetName": "TD Tasks",
       "targetType": "user",
       "targetFieldId": "id"
     },
@@ -28,11 +28,11 @@
   },
   "project_id": {
     "type": "text",
-    "name": "Project",
+    "name": "TD Project",
     "relation": {
       "cardinality": "many-to-one",
-      "name": "Project",
-      "targetName": "Tasks",
+      "name": "TD Project",
+      "targetName": "TD Tasks",
       "targetType": "project",
       "targetFieldId": "id"
     },
@@ -52,12 +52,12 @@
   },
   "parent_id": {
     "type": "text",
-    "name": "Parent Task",
+    "name": "TD Parent Task",
     "relation": {
       "cardinality": "many-to-many",
-      "name": "Parent Task",
-      "targetName": "Sub Tasks",
-      "targetType": "task",
+      "name": "TD Parent Task",
+      "targetName": "TD Tasks",
+      "targetType": "item",
       "targetFieldId": "id"
     },
     "path": "parent_id"
@@ -70,11 +70,11 @@
   },
   "labels": {
     "type": "text",
-    "name": "Labels",
+    "name": "TD Labels",
     "relation": {
       "cardinality": "many-to-many",
-      "name": "Labels",
-      "targetName": "Tasks",
+      "name": "TD Labels",
+      "targetName": "TD Tasks",
       "targetType": "label",
       "targetFieldId": "name"
     },
@@ -86,7 +86,7 @@
     "relation": {
       "cardinality": "one-to-many",
       "name": "Added By",
-      "targetName": "Tasks",
+      "targetName": "TD Tasks",
       "targetType": "user",
       "targetFieldId": "id"
     },
@@ -98,7 +98,7 @@
     "relation": {
       "cardinality": "one-to-many",
       "name": "Assigned By",
-      "targetName": "Tasks",
+      "targetName": "TD Tasks",
       "targetType": "user",
       "targetFieldId": "id"
     },
@@ -110,7 +110,7 @@
     "relation": {
       "cardinality": "one-to-many",
       "name": "Responsible User",
-      "targetName": "Tasks",
+      "targetName": "TD Tasks",
       "targetType": "user",
       "targetFieldId": "id"
     },
@@ -145,11 +145,11 @@
   },
   "date": {
     "type": "text",
-    "name": "Date",
+    "name": "TD Date",
     "relation": {
       "cardinality": "many-to-one",
-      "name": "Date",
-      "targetName": "Tasks",
+      "name": "TD Date",
+      "targetName": "TD Tasks",
       "targetType": "date",
       "targetFieldId": "id"
     },
@@ -157,11 +157,11 @@
   },
   "week": {
     "type": "text",
-    "name": "Week",
+    "name": "TD Week",
     "relation": {
       "cardinality": "many-to-one",
-      "name": "Week",
-      "targetName": "Tasks",
+      "name": "TD Week",
+      "targetName": "TD Tasks",
       "targetType": "week",
       "targetFieldId": "id"
     },
@@ -169,11 +169,11 @@
   },
   "month": {
     "type": "text",
-    "name": "Month",
+    "name": "TD Month",
     "relation": {
       "cardinality": "many-to-one",
-      "name": "Month",
-      "targetName": "Tasks",
+      "name": "TD Month",
+      "targetName": "TD Tasks",
       "targetType": "month",
       "targetFieldId": "id"
     },
@@ -181,11 +181,11 @@
   },
   "weekdayname": {
     "type": "text",
-    "name": "Week Day Name",
+    "name": "TD Week Day Name",
     "relation": {
       "cardinality": "many-to-one",
-      "name": "Week Day Name",
-      "targetName": "Tasks",
+      "name": "TD Week Day Name",
+      "targetName": "TD Tasks",
       "targetType": "weekdayname",
       "targetFieldId": "id"
     },

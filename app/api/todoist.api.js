@@ -59,7 +59,7 @@ const getFromSyncApi = async ({
 module.exports.getUser = async (account) => {
   const { user } = await getFromSyncApi({ account, resourceTypes: ["user"] });
   return user;
-}
+};
 const getSingleResourceFromSyncApi = async ({
   account,
   resourceType,
@@ -200,13 +200,13 @@ const getValue = (row, { path, arrayPath, subPath = `` }) => {
   return v;
 };
 
-const getStatus = ({requestedType}) => {
-  if (requestedType=="item") {
+const getStatus = ({ requestedType }) => {
+  if (requestedType == "item") {
     return "Open";
-  }else if(requestedType=="completed_item"){
-    return "Done"
+  } else if (requestedType == "completed_item") {
+    return "Done";
   }
-}
+};
 
 const processItem = ({ schema, item, requestedType, filter }) => {
   const r = {};
@@ -219,16 +219,16 @@ const processItem = ({ schema, item, requestedType, filter }) => {
     const schemaValue = schema[id];
 
     // adjust date as UTC
-    if(["due_date", "completed_at", "date_due_or_completed"].includes(id)){
+    if (["due_date", "completed_at", "date_due_or_completed"].includes(id)) {
       const value = getValue(item, schemaValue);
-      if(!_.isEmpty(value)){
+      if (!_.isEmpty(value)) {
         r[id] = dayjs(value).utc().format();
-      }else{
+      } else {
         r[id] = null;
       }
-    
-    // set relations
-    }else if (["date", "week", "month", "weekdayname"].includes(id)) {
+
+      // set relations
+    } else if (["date", "week", "month", "weekdayname"].includes(id)) {
       r[id] = datesApi.getDateRelation({
         requestedType: id,
         item,
@@ -237,12 +237,12 @@ const processItem = ({ schema, item, requestedType, filter }) => {
         months,
         weekdaynames,
       });
-    
-    // status field is set as workflow type
-    }else if("status" == id){
+
+      // status field is set as workflow type
+    } else if ("status" == id) {
       r[id] = getStatus({ requestedType });
 
-    // set urls
+      // set urls
     } else if (id == "url") {
       if (requestedType == "item") {
         r[id] = `https://todoist.com/app/task/${item.id}`;
@@ -251,8 +251,8 @@ const processItem = ({ schema, item, requestedType, filter }) => {
       } else {
         r[id] = `https://todoist.com/app/${requestedType}/${item.id}`;
       }
-    
-    // set other fields
+
+      // set other fields
     } else {
       r[id] = getValue(item, schemaValue);
     }
@@ -303,7 +303,6 @@ const getDateData = ({ account, filter, requestedType }) => {
   }
 };
 
-
 module.exports.data = async ({ account, filter, requestedType }) => {
   console.log("filter: ", filter);
   console.log("requestedType: ", requestedType);
@@ -322,12 +321,11 @@ module.exports.data = async ({ account, filter, requestedType }) => {
       });
       console.log("sync_token, full_sync: ", sync_token, full_sync);
       if (data.length > 0) {
-        return {
-          items: data.map((item) =>
-          // items: data.slice(0,3).map((item) =>
-            processItem({ schema, item, requestedType, filter })
-          ),
-        };
+        const items = data.map((item) =>
+          // items: data.slice(0,3).map((item) =>  // for testing
+          processItem({ schema, item, requestedType, filter })
+        );
+        return { items };
       } else {
         return { items: [] };
       }
@@ -338,7 +336,7 @@ module.exports.data = async ({ account, filter, requestedType }) => {
     case "weekdayname":
       const dateData = getDateData({ account, filter, requestedType });
       return { items: dateData };
-      // return { items: dateData.slice(0,3) };
+    // return { items: dateData.slice(0,3) };
 
     default:
       return { items: [] };
@@ -372,6 +370,14 @@ module.exports.applyTodoistApiEndpoints = (app) => {
   //   );
   //   res.json(collaborators);
   // });
+  app.get("/api/get_items", async (req, res) => {
+    const account = testAccount();
+    const items = await getSingleResourceFromSyncApi({
+      account,
+      resourceType: "items",
+    });
+    res.json(items);
+  });
   app.get("/api/get_all_completed_items", async (req, res) => {
     const account = testAccount();
     const items = await getCompletedItemsSyncApi({ account });
