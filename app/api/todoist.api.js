@@ -1,4 +1,3 @@
-const { TodoistApi } = require("@doist/todoist-api-typescript");
 const datesApi = require("./dates.api");
 
 const _ = require("lodash");
@@ -34,9 +33,6 @@ const schemas = {
   weekdayname: weekDayNameSchema,
 };
 
-// const getTodoistClient = (account) =>
-//   new TodoistApi(account.access_token || `INVALID TOKEN`);
-
 const getFromSyncApi = async ({
   account,
   resourceTypes = ["all"],
@@ -45,7 +41,7 @@ const getFromSyncApi = async ({
   const res = await got
     .post(`https://api.todoist.com/sync/v9/sync`, {
       resolveBodyOnly: true,
-      headers: { Authorization: `Bearer ${account.access_token}` },
+      headers: { Authorization: `Bearer ${process.env.ENV_TEST_TOKEN ?? account.access_token}` },
       json: {
         sync_token,
         resource_types: JSON.stringify(resourceTypes),
@@ -76,12 +72,21 @@ const getSingleResourceFromSyncApi = async ({
 
 const getCompletedItemsSyncApi = async ({ account, limit = 100 }) => {
   const res = await got(`https://api.todoist.com/sync/v9/completed/get_all`, {
-    headers: { Authorization: `Bearer ${account.access_token}` },
+    headers: { Authorization: `Bearer ${process.env.ENV_TEST_TOKEN ?? account.access_token}` },
     searchParams: {
       limit,
     },
   }).json();
   return { data: res.items, sync_token: null, full_sync: null };
+};
+
+const getItemsWithCompletedSyncApi = async ({ account }) => {
+  const { items } = await getFromSyncApi({
+    account,
+    resourceTypes: ["items"],
+  });
+  const {data: completed_items} = await getCompletedItemsSyncApi({ account, limit:10 });
+  return { items, completed_items, sync_token: null, full_sync: null };
 };
 
 const getUsersSyncApi = async ({ account }) => {
@@ -114,7 +119,7 @@ const getTypes = () => {
   return [
     { id: "project", name: "TD Project" },
     { id: "item", name: "TD Task" },
-    { id: "completed_item", name: "TD Completed Task" },
+    // { id: "completed_item", name: "TD Completed Task" },
     { id: "label", name: "TD Label" },
     { id: "user", name: "TD User" },
     { id: "date", name: "TD Date" },
@@ -128,25 +133,18 @@ module.exports.config = async ({ account, pageSize }) => {
   console.log("config: account: ", account);
   const types = getTypes();
   const filters = [
-    // {
-    //   id: "timezone",
-    //   title: "Select Timezone",
-    //   datalist: true,
-    //   optional: false,
-    //   type: "list",
-    // },
-    // {
-    //   id: "from",
-    //   type: "date",
-    //   title: "Start Absolute Date",
-    //   optional: true,
-    // },
-    // {
-    //   id: "monthrange",
-    //   type: "number",
-    //   title: "Months to Sync before and after (by default 3 months)",
-    //   optional: true,
-    // },
+    {
+      id: "from",
+      type: "datebox",
+      title: "Start Date to Sync (Absolute)",
+      optional: true,
+    },
+    {
+      id: "monthrange",
+      type: "number",
+      title: "Months to Sync before and after (by default 3 months)",
+      optional: true,
+    },
   ];
   // return { types, filters, webhooks: { enabled: true } };
   return { types, filters };
@@ -210,10 +208,14 @@ const getStatus = ({ requestedType }) => {
 
 const processItem = ({ schema, item, requestedType, filter }) => {
   const r = {};
-  const dates = datesApi.getDates({ filter: {}, requestedType: "date" });
-  const weeks = datesApi.getDates({ filter: {}, requestedType: "week" });
-  const months = datesApi.getDates({ filter: {}, requestedType: "month" });
+  const dates = datesApi.getDates({ filter, requestedType: "date" });
+  const weeks = datesApi.getDates({ filter, requestedType: "week" });
+  const months = datesApi.getDates({ filter, requestedType: "month" });
   const weekdaynames = datesApi.getWeekDayNames();
+
+  if(requestedType=="completed_item"){
+    r["__syncAction"] = "SET";
+  }
 
   _.keys(schema).forEach((id) => {
     const schemaValue = schema[id];
@@ -268,18 +270,18 @@ const getData = async ({ account, filter, requestedType }) => {
         account,
         resourceType: "projects",
       });
-    case "item":
-      return await getSingleResourceFromSyncApi({
-        account,
-        resourceType: "items",
-      });
+    // case "item":
+    //   return await getSingleResourceFromSyncApi({
+    //     account,
+    //     resourceType: "items",
+    //   });
+    // case "completed_item":
+    //   return await getCompletedItemsSyncApi({ account });
     case "label":
       return await getSingleResourceFromSyncApi({
         account,
         resourceType: "labels",
       });
-    case "completed_item":
-      return await getCompletedItemsSyncApi({ account });
     case "user":
       return await getUsersSyncApi({ account });
 
@@ -297,7 +299,7 @@ const getDateData = ({ account, filter, requestedType }) => {
 
     case "weekdayname":
       return datesApi.getWeekDayNames({ account, filter, requestedType });
-
+    
     default:
       return [];
   }
@@ -306,14 +308,27 @@ const getDateData = ({ account, filter, requestedType }) => {
 module.exports.data = async ({ account, filter, requestedType }) => {
   console.log("filter: ", filter);
   console.log("requestedType: ", requestedType);
+  const synchronizationType = "full";
+  const schema = schemas[requestedType];
 
   switch (requestedType) {
-    case "project":
     case "item":
+      const { items, completed_items } = await getItemsWithCompletedSyncApi({account});
+      const processed_items = items.map((item) =>
+        processItem({ schema: schemas["item"], item,  requestedType:"item", filter })
+      ) //.slice(0,10); // for testing
+      const processed_completed_items = completed_items.map((item) => 
+        processItem({ schema: schemas["completed_item"], item, requestedType:"completed_item", filter })
+      );
+      const merged_items = [...processed_completed_items, ...processed_items];
+      return {items: merged_items, synchronizationType}
+
     case "completed_item":
+      return { items: [] };
+
+    case "project":
     case "label":
     case "user":
-      const schema = schemas[requestedType];
       const { data, sync_token, full_sync } = await getData({
         account,
         filter,
@@ -322,10 +337,9 @@ module.exports.data = async ({ account, filter, requestedType }) => {
       console.log("sync_token, full_sync: ", sync_token, full_sync);
       if (data.length > 0) {
         const items = data.map((item) =>
-          // items: data.slice(0,3).map((item) =>  // for testing
           processItem({ schema, item, requestedType, filter })
-        );
-        return { items };
+        ) //.slice(0,3); // for testing
+        return { items, synchronizationType };
       } else {
         return { items: [] };
       }
@@ -335,169 +349,76 @@ module.exports.data = async ({ account, filter, requestedType }) => {
     case "month":
     case "weekdayname":
       const dateData = getDateData({ account, filter, requestedType });
-      return { items: dateData };
-    // return { items: dateData.slice(0,3) };
+      return { items: dateData, synchronizationType };
+    // return { items: dateData.slice(0,3) }; // for testing
 
     default:
       return { items: [] };
   }
 };
 
-const testAccount = () => {
-  return { access_token: process.env.ENV_TEST_TOKEN };
-};
+// const testTodoistAccount = () => {
+//   return { access_token: process.env.ENV_TEST_TOKEN };
+// };
 
-const Fibery = require("fibery-unofficial");
+// const Fibery = require("fibery-unofficial");
 
-module.exports.applyTodoistApiEndpoints = (app) => {
-  console.log("applyTodoistApiEndpoints: ");
-  // app.get("/api/get_projects", async (req, res) => {
-  //   api.getProjects()
-  //     .then((projects) => {
-  //       console.log(projects);
-  //       res.json(projects);
-  //     })
-  //     .catch((error) => console.log(error));
-  // });
+// module.exports.applyTodoistApiEndpoints = (app) => {
+//   console.log("applyTodoistApiEndpoints: ");
+//   // app.get("/api/get_projects", async (req, res) => {
+//   //   api.getProjects()
+//   //     .then((projects) => {
+//   //       console.log(projects);
+//   //       res.json(projects);
+//   //     })
+//   //     .catch((error) => console.log(error));
+//   // });
 
-  // app.get("/api/get_collaborators", async (req, res) => {
-  //   const account = testAccount();
-  //   const user = await getFromSyncApi({ account, resourceTypes: ["user"] });
-  //   console.log("account: ", account);
-  //   console.log("user: ", user);
-  //   const collaborators = await getCollaboratorsSyncApi({ account }).catch(
-  //     (error) => console.log(error)
-  //   );
-  //   res.json(collaborators);
-  // });
-  app.get("/api/get_items", async (req, res) => {
-    const account = testAccount();
-    const items = await getSingleResourceFromSyncApi({
-      account,
-      resourceType: "items",
-    });
-    res.json(items);
-  });
-  app.get("/api/get_all_completed_items", async (req, res) => {
-    const account = testAccount();
-    const items = await getCompletedItemsSyncApi({ account });
-    res.json(items);
-  });
-  // app.get("/api/get_items_with_completed", async (req, res) => {
-  //   const account = testAccount();
-  //   const items = await getItemsWithCompletedSyncApi({ account });
-  //   res.json(items);
-  // });
-  app.get("/api/delete_webhook/:id", async (req, res) => {
-    const account = testAccount();
-    const webhook_id = req.params.id;
-    const url = `https://ooooo.fibery.io/api/webhooks/v2/${webhook_id}`;
-    const opt = {
-      headers: {
-        Authorization: `Bearer ${process.env.ENV_FIBERY_API_TOKEN}`,
-        "Content-Type": "application/json",
-      },
-    };
-    const response = await got.delete(url, opt).json();
-    res.json(response);
-  });
+//   app.get("/api/get_items", async (req, res) => {
+//     const account = testTodoistAccount();
+//     const items = await getSingleResourceFromSyncApi({
+//       account,
+//       resourceType: "items",
+//     });
+//     res.json(items);
+//   });
+//   app.get("/api/get_all_completed_items", async (req, res) => {
+//     const account = testTodoistAccount();
+//     const items = await getCompletedItemsSyncApi({ account });
+//     res.json(items);
+//   });
+//   // app.get("/api/get_items_with_completed", async (req, res) => {
+//   //   const account = testTodoistAccount();
+//   //   const items = await getItemsWithCompletedSyncApi({ account });
+//   //   res.json(items);
+//   // });
+//   app.get("/api/delete_webhook/:id", async (req, res) => {
+//     const account = testTodoistAccount();
+//     const webhook_id = req.params.id;
+//     const url = `https://ooooo.fibery.io/api/webhooks/v2/${webhook_id}`;
+//     const opt = {
+//       headers: {
+//         Authorization: `Bearer ${process.env.ENV_FIBERY_API_TOKEN}`,
+//         "Content-Type": "application/json",
+//       },
+//     };
+//     const response = await got.delete(url, opt).json();
+//     res.json(response);
+//   });
 
-  app.get("/api/get_users", async (req, res) => {
-    const account = testAccount();
-    const users = await getUsersSyncApi({ account });
-    console.log("users: ", users);
-    res.json(users);
-  });
+//   app.get("/api/get_users", async (req, res) => {
+//     const account = testTodoistAccount();
+//     const users = await getUsersSyncApi({ account });
+//     console.log("users: ", users);
+//     res.json(users);
+//   });
 
-  app.get("/api/get_schema", async (req, res) => {
-    // const account = testAccount();
-    // console.log("account: ", account);
-    // const collaborators = await getCollaboratorsSyncApi({account}).catch((error) => console.log(error));
-    const ps = getProjectSchema();
-    console.log(typeof ps);
-    res.json(ps);
-  });
-
-  // app.get("/api/create_view", async (req, res) => {
-  //   const options =  {
-  //     headers: {
-  //       "Authorization": `Bearer ${process.env.ENV_FIBERY_API_TOKEN}`,
-  //       "Content-Type": "application/json"
-  //     },
-  //     json: {
-  //       "jsonrpc": "2.0",
-  //       "method": "create-views",
-  //       "params": {
-  //         "views": [
-  //           {
-  //             "fibery/id": "3541bdf6-ab15-4d5e-b17b-eb124b8fe2f7",
-  //             "fibery/name": "My Board",
-  //             "fibery/type": "board",
-  //             "fibery/meta": {},
-  //             "fibery/container-app": {
-  //               "fibery/id": "760ee2e2-e8ca-4f92-aaf2-4cde7f9dad0e"
-  //             }
-  //           }
-  //         ]
-  //       }
-  //     },
-  //   }
-  //   const response = await got.post(`https://ooooo.fibery.io/api/views/json-rpc`, options).json()
-  //   res.json({response});
-  // });
-
-  app.get("/api/get_entity", async (req, res) => {
-    const fibery = new Fibery({
-      host: "ooooo.fibery.io",
-      token: process.env.ENV_FIBERY_API_TOKEN,
-    });
-    const systems = await fibery.entity.query(
-      {
-        "q/from": "System/System",
-        "q/select": [
-          "fibery/id",
-          "fibery/public-id",
-          "System/Name",
-          "System/Latest Completed Child Datetime",
-        ],
-        "q/where": [
-          ">=",
-          ["System/Latest Completed Child Datetime"],
-          "$birthday",
-        ],
-        "q/order-by": [[["System/Latest Completed Child Datetime"], "q/asc"]],
-        "q/limit": 3,
-      },
-      { $birthday: "1986-01-01" }
-    );
-
-    // const options =  {
-    //   headers: {
-    //     "Authorization": `Bearer ${process.env.ENV_FIBERY_API_TOKEN}`,
-    //     "Content-Type": "application/json"
-    //   },
-    //   json: [
-    //     {
-    //       "command": "fibery.entity/query",
-    //       "args": {
-    //         "query": {
-    //           "q/from": "System/System",
-    //           "q/select": [
-    //              "fibery/id",
-    //              "fibery/public-id",
-    //              "System/name",
-    //              "System/Full Name",
-    //            ],
-    //           "q/order-by": [
-    //             [["System/Latest Completed Child Datetime"], "q/desc"]
-    //           ],
-    //           "q/limit": 3
-    //         }
-    //       }
-    //     }
-    //   ]
-    // }
-    // const response = await got.post(`https://ooooo.fibery.io/api/views/json-rpc`, options).json()
-    res.json({ systems });
-  });
-};
+//   app.get("/api/get_schema", async (req, res) => {
+//     // const account = testTodoistAccount();
+//     // console.log("account: ", account);
+//     // const collaborators = await getCollaboratorsSyncApi({account}).catch((error) => console.log(error));
+//     const ps = getProjectSchema();
+//     console.log(typeof ps);
+//     res.json(ps);
+//   });
+// };

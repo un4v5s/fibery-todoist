@@ -39,7 +39,7 @@ module.exports = function () {
   app.use(morgan("tiny"));
   app.use(bodyParser.json({ type: `*/*` }));
   app.use(express.static(path.join(__dirname, `public`)));
-  todoist.applyTodoistApiEndpoints(app);
+  // todoist.applyTodoistApiEndpoints(app);
 
   app.post(`/validate`, (req, res) =>
     promiseToResponse(

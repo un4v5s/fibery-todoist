@@ -20,5 +20,17 @@
     "name": "Date Range",
     "type": "text",
     "subType": "date-range"
+  },
+  "month": {
+    "type": "text",
+    "name": "TD Month Id",
+    "relation": {
+      "cardinality": "many-to-one",
+      "name": "TD Month",
+      "targetName": "Weeks",
+      "targetType": "month",
+      "targetFieldId": "id"
+    },
+    "path": "month"
   }
 }

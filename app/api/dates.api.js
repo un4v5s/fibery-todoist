@@ -11,13 +11,9 @@ dayjs.extend(require("dayjs/plugin/timezone"));
 
 module.exports.getDates = ({ filter, requestedType }) => {
   const { from, monthrange = 3 } = filter ?? {};
-  // console.log("from: ", from);
-  const startDate = from ? dayjs(from).startOf('day') : dayjs().startOf('day').subtract(monthrange, "month");
-
-  const endDate = dayjs().add(monthrange, "month").startOf('day');
+  const startDate = !_.isEmpty(from) ? dayjs(from).utc().startOf('day').startOf('month') : dayjs().utc().startOf('day').startOf("month").subtract(monthrange, "month");
+  const endDate = dayjs().utc().add(monthrange, "month").startOf('day').endOf("month");
   const dates = [];
-  // console.log("startDate: ", startDate.format());
-  // console.log("endDate: ", endDate.format());
   let currentDate = startDate.clone();
 
   switch (requestedType) {
@@ -28,8 +24,10 @@ module.exports.getDates = ({ filter, requestedType }) => {
           name: currentDate.format("YYYY-MM-DD"),
           mmdd: currentDate.format("MM/DD"),
           date: currentDate.startOf('day').format(),
-          weekdayname: currentDate.format("dddd"),
           abbreviation_weekdayname: currentDate.format("ddd"),
+          week: uuid("week_" + currentDate.startOf("isoWeek").format("YYYY-MM-DD")),
+          month: uuid("month_" + currentDate.startOf("month").format("YYYY-MM-DD")),
+          weekdayname: uuid(currentDate.format("dddd").toLowerCase())
         });
         currentDate = currentDate.add(1, "day");
       }
@@ -38,8 +36,9 @@ module.exports.getDates = ({ filter, requestedType }) => {
     case "week":
       while (currentDate.isBefore(endDate)) {
         const date_range = {
-          start: currentDate.startOf("week").format("YYYY-MM-DD"),
-          end: currentDate.endOf("week").format("YYYY-MM-DD"),
+          start: currentDate.startOf("isoWeek").format("YYYY-MM-DD"),
+          // end: currentDate.endOf("isoWeek").format("YYYY-MM-DD"), // not working
+          end: currentDate.add(7, "day").format("YYYY-MM-DD"),
         };
         dates.push({
           id: uuid("week_" + currentDate.format("YYYY-MM-DD")),
@@ -48,16 +47,19 @@ module.exports.getDates = ({ filter, requestedType }) => {
           yw: currentDate.format("YYYY-WW"),
           date_range: JSON.stringify(date_range),
           date_range_json: date_range,
+          month: uuid("month_" + currentDate.startOf("isoWeek").startOf("month").format("YYYY-MM-DD")),
         });
-        currentDate = currentDate.add(1, "week").startOf("week");
+        currentDate = currentDate.add(1, "week").startOf("isoWeek");
       }
       break;
 
     case "month":
       while (currentDate.isBefore(endDate)) {
+        const daysInMonth = currentDate.daysInMonth();
         const date_range = {
           start: currentDate.startOf("month").format("YYYY-MM-DD"),
-          end: currentDate.endOf("month").format("YYYY-MM-DD"),
+          // end: currentDate.endOf("month").format("YYYY-MM-DD"), // not working
+          end: currentDate.add(daysInMonth, "days").format("YYYY-MM-DD"),
         };
         dates.push({
           id: uuid("month_" + currentDate.format("YYYY-MM-DD")),

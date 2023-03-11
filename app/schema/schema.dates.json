@@ -15,12 +15,41 @@
     "name": "Date",
     "type": "date"
   },
-  "weekdayname": {
-    "name": "Week Day Name",
-    "type": "text"
-  },
   "abbreviation_weekdayname": {
     "name": "Abbreviation Week Day Name",
     "type": "text"
+  },
+  "week": {
+    "type": "text",
+    "name": "TD Week Id",
+    "relation": {
+      "cardinality": "many-to-one",
+      "name": "TD Week",
+      "targetName": "Dates",
+      "targetType": "week",
+      "targetFieldId": "id"
+    }
+  },
+  "month": {
+    "type": "text",
+    "name": "TD Month Id",
+    "relation": {
+      "cardinality": "many-to-one",
+      "name": "TD Month",
+      "targetName": "Dates",
+      "targetType": "month",
+      "targetFieldId": "id"
+    }
+  },
+  "weekdayname": {
+    "type": "text",
+    "name": "TD Week Day Name Id",
+    "relation": {
+      "cardinality": "many-to-one",
+      "name": "TD Week Day Name",
+      "targetName": "Dates",
+      "targetType": "weekdayname",
+      "targetFieldId": "id"
+    }
   }
 }
