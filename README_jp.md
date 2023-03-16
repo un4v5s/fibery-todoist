@@ -1,6 +1,8 @@
 # Fibery - Todoist integration app
 
-## Overview
+[English README](./README.md)
+
+## 概要
 
 Status: 開発中
 
@@ -16,7 +18,7 @@ TodoistのタスクやプロジェクトをFibery側で表示するだけの、�
 
 <br>
 
-## Usage
+## 使い方
 
 現状まだ開発版なので、ご自身でcloneしてホストしていただきますようお願いいたします。
 
@@ -38,9 +40,9 @@ TodoistのタスクやプロジェクトをFibery側で表示するだけの、�
 
 <br>
 
-## Features
+## 機能
 
-### Sample and suggested views
+### サンプルとおすすめビュー
 
 Todoistには存在しないカレンダービューでタスク一覧を確認できます。<br>
 <img src="./imgs/calendar.jpg" width="70%" />
@@ -58,7 +60,7 @@ Todoistでは表示できない、縦軸がISO週の曜日表示です。<br>
 月表示です。例えば、週や月次でのみ発生する繰り返しタスクのみにフィルタすれば、外観の予定を把握することができると考えられます。<br>
 <img src="./imgs/monthboard.jpg" width="70%" />
 
-### And more...
+### さらに...
 
 その他、Fiberyの自由さをTodoistに適用できます。
 
@@ -81,15 +83,14 @@ TodoistのKarmaの再現もできるかもしれません。
 - textのsubTypeとして、ドキュメントに記載されている以外にworkflowも指定できる。
   - subtypeは多分下の画像のドロップダウンが大体使えると思います（未検証）
   - <img src="./imgs/subtypes.png" width="20%" />
-- Incoming Webhookを元にした、一部フィールドのnear realtime syncの実装は可能らしいです。公式に開発されているIntercomの統合機能では、[本機能が使われています。](https://the.fibery.io/@public/User_Guide/Guide/Intercom-integration-73/anchor=Change-sync-interval--c57554b4-9a53-4623-9a89-506043592763)
+- Incoming Webhookに反応することによる、一部フィールドのnear realtime syncの実装は可能らしいです。公式に開発されているIntercomの統合機能では、[本機能が使われています。](https://the.fibery.io/@public/User_Guide/Guide/Intercom-integration-73/anchor=Change-sync-interval--c57554b4-9a53-4623-9a89-506043592763)
 - ドキュメントには書いてませんが、subTypeがdate-rangeの場合に実際に渡す値は、下記の形式です
   - `JSON.stringify({start: YYYY-MM-DD, end: YYYY-MM-DD})`
 
 
-
 <br>
 
-## References
+## 参考資料
 
 - [Todoist Sync API v9](https://developer.todoist.com/sync/v9/)
 - [Fibery integration API](https://api.fibery.io/apps.html)

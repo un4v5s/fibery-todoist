@@ -1,5 +1,6 @@
 # Fibery - Todoist integration app
 
+[日本語README](./README_jp.md)
 ## Overview
 
 Status: Under development
@@ -8,7 +9,7 @@ Currently, this project is a personal development project for myself. I have mad
 
 This is an integration app to import and display Todoist tasks and projects in Fibery.
 
-This is a unidirectional synchronous integration feature that simply displays tasks and projects in Todoist on the Fibery side.
+This is a unidirectional synchronous integration app that simply displays tasks and projects in Todoist on the Fibery side.
 
 As of March 2023, a Bata version of [partial bi-directional sync](https://the.fibery.io/@public/User_Guide/Guide/Jira-two-way-sync-159) has been implemented in the official Fibery-developed JIRA integration.
 
@@ -18,7 +19,7 @@ In the future, when bi-directional sync development becomes available for the Fi
 
 ## Usage
 
-This is still a development version, so please clone and host it by yourself.
+This is still a development version, so please clone and host by yourself.
 
 <br>
 
