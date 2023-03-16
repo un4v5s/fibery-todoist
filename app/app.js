@@ -59,7 +59,7 @@ module.exports = function () {
   // setup endpoints
   app.post(`/api/v1/synchronizer/config`, (req, res) => {
     console.log("/api/v1/synchronizer/config");
-    console.log("req: ", req.body);
+    // console.log("req: ", req.body);
     if (_.isEmpty(req.body.account)) {
       throw new Error(`account should be provided`);
     }
@@ -69,7 +69,7 @@ module.exports = function () {
   });
   app.post(`/api/v1/synchronizer/schema`, (req, res) => {
     console.log("/api/v1/synchronizer/schema");
-    console.log("req: ", req.body);
+    // console.log("req: ", req.body);
     promiseToResponse(res, todoist.schema(req.body));
   });
 

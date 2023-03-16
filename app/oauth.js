@@ -9,8 +9,6 @@ module.exports = {
       scope: `data:read,data:delete`,
       state,
       redirect_uri: callbackUri,
-      // response_type: "code",
-      // owner: `user`,
     };
     // console.log("queryParams: ", queryParams);
     const queryParamsStr = Object.keys(queryParams)

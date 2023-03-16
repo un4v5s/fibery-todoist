@@ -10,9 +10,21 @@ dayjs.extend(require("dayjs/plugin/utc"));
 dayjs.extend(require("dayjs/plugin/timezone"));
 
 module.exports.getDates = ({ filter, requestedType }) => {
-  const { from, monthrange = 3 } = filter ?? {};
-  const startDate = !_.isEmpty(from) ? dayjs(from).utc().startOf('day').startOf('month') : dayjs().utc().startOf('day').startOf("month").subtract(monthrange, "month");
-  const endDate = dayjs().utc().add(monthrange, "month").startOf('day').endOf("month");
+  let { from, monthrange } = filter;
+  from = from ?? null; // default and destructuring assignment can't be use with null
+  monthrange = monthrange ?? 3;
+  const startDate = _.isEmpty(from)
+    ? dayjs()
+        .utc()
+        .startOf("day")
+        .startOf("month")
+        .subtract(monthrange, "month")
+    : dayjs(from).utc().startOf("day").startOf("month");
+  const endDate = dayjs()
+    .utc()
+    .add(monthrange, "month")
+    .startOf("day")
+    .endOf("month");
   const dates = [];
   let currentDate = startDate.clone();
 
@@ -23,11 +35,15 @@ module.exports.getDates = ({ filter, requestedType }) => {
           id: uuid("date_" + currentDate.format("YYYY-MM-DD")),
           name: currentDate.format("YYYY-MM-DD"),
           mmdd: currentDate.format("MM/DD"),
-          date: currentDate.startOf('day').format(),
+          date: currentDate.startOf("day").format(),
           abbreviation_weekdayname: currentDate.format("ddd"),
-          week: uuid("week_" + currentDate.startOf("isoWeek").format("YYYY-MM-DD")),
-          month: uuid("month_" + currentDate.startOf("month").format("YYYY-MM-DD")),
-          weekdayname: uuid(currentDate.format("dddd").toLowerCase())
+          week: uuid(
+            "week_" + currentDate.startOf("isoWeek").format("YYYY-MM-DD")
+          ),
+          month: uuid(
+            "month_" + currentDate.startOf("month").format("YYYY-MM-DD")
+          ),
+          weekdayname: uuid(currentDate.format("dddd").toLowerCase()),
         });
         currentDate = currentDate.add(1, "day");
       }
@@ -37,8 +53,11 @@ module.exports.getDates = ({ filter, requestedType }) => {
       while (currentDate.isBefore(endDate)) {
         const date_range = {
           start: currentDate.startOf("isoWeek").format("YYYY-MM-DD"),
+          end: currentDate
+            .startOf("isoWeek")
+            .add(7, "day")
+            .format("YYYY-MM-DD"),
           // end: currentDate.endOf("isoWeek").format("YYYY-MM-DD"), // not working
-          end: currentDate.add(7, "day").format("YYYY-MM-DD"),
         };
         dates.push({
           id: uuid("week_" + currentDate.format("YYYY-MM-DD")),
@@ -47,7 +66,13 @@ module.exports.getDates = ({ filter, requestedType }) => {
           yw: currentDate.format("YYYY-WW"),
           date_range: JSON.stringify(date_range),
           date_range_json: date_range,
-          month: uuid("month_" + currentDate.startOf("isoWeek").startOf("month").format("YYYY-MM-DD")),
+          month: uuid(
+            "month_" +
+              currentDate
+                .startOf("isoWeek")
+                .startOf("month")
+                .format("YYYY-MM-DD")
+          ),
         });
         currentDate = currentDate.add(1, "week").startOf("isoWeek");
       }
@@ -58,8 +83,11 @@ module.exports.getDates = ({ filter, requestedType }) => {
         const daysInMonth = currentDate.daysInMonth();
         const date_range = {
           start: currentDate.startOf("month").format("YYYY-MM-DD"),
+          end: currentDate
+            .startOf("month")
+            .add(daysInMonth, "days")
+            .format("YYYY-MM-DD"),
           // end: currentDate.endOf("month").format("YYYY-MM-DD"), // not working
-          end: currentDate.add(daysInMonth, "days").format("YYYY-MM-DD"),
         };
         dates.push({
           id: uuid("month_" + currentDate.format("YYYY-MM-DD")),
@@ -142,12 +170,9 @@ module.exports.getDateRelation = ({
   months,
   weekdaynames,
 }) => {
-  // console.log(item.content);
-  const tmp_date = item.completed_at ?? item.due?.date ?? null;
-  if (_.isEmpty(tmp_date)) {
-    return null;
-  }
-  const date_due_or_completed = dayjs(tmp_date).utc().format();
+  const date_due_or_completed = item.completed_at ? dayjs(item.completed_at).utc()
+    : item.due?.date ? dayjs(item.due?.date).utc(true)
+    : null;
   // console.log("date_due_or_completed: ", date_due_or_completed);
 
   switch (requestedType) {
@@ -160,10 +185,12 @@ module.exports.getDateRelation = ({
       return weeks
         .filter((w) => {
           return dayjs(date_due_or_completed).isBetween(
-            dayjs(w.date_range_json.start),
-            dayjs(w.date_range_json.end),
+            // w.date_range_json.start,
+            // w.date_range_json.end,
+            dayjs(w.date_range_json.start).utc(true).startOf("day"),
+            dayjs(w.date_range_json.end).utc(true).endOf("day"),
             "day",
-            "[]"
+            "[)"
           );
         })
         .map((e) => e.id);
@@ -172,10 +199,10 @@ module.exports.getDateRelation = ({
       return months
         .filter((m) => {
           return dayjs(date_due_or_completed).isBetween(
-            m.date_range_json.start,
-            m.date_range_json.end,
+            dayjs(m.date_range_json.start).utc(true).startOf("day"),
+            dayjs(m.date_range_json.end).utc(true).endOf("day"),
             "day",
-            "[]"
+            "[)"
           );
         })
         .map((e) => e.id);

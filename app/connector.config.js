@@ -12,31 +12,31 @@ const OAuth2 = {
       type: "oauth",
       id: "callback_uri",
     },
-    {
-      type: `link`,
-      name: ``,
-      description: `(Optional) If you want to generate suggested view automatically, Please enter Domain and Fibery API Token by fill below fields`,
-      id: "a",
-      value: "a"
-    },
-    {
-      type: `text`,
-      name: `Your Domain`,
-      description: `Provide Your Fibery Account Domain`,
-      id: "domain",
-    },
-    {
-      type: `password`,
-      name: `API Token`,
-      description: `Provide Fibery API Token`,
-      id: `api_key`,
-    },
-    {
-      type: "link",
-      id: "link",
-      name: "Get Fibery API Token from url below.",
-      value: "https://ooooo.fibery.io/api/tokens",
-    },
+    // {
+    //   type: `link`,
+    //   name: ``,
+    //   description: `(Optional) If you want to generate suggested view automatically, Please enter Domain and Fibery API Token by fill below fields`,
+    //   id: "a",
+    //   value: "a"
+    // },
+    // {
+    //   type: `text`,
+    //   name: `Your Domain`,
+    //   description: `Provide Your Fibery Account Domain`,
+    //   id: "domain",
+    // },
+    // {
+    //   type: `password`,
+    //   name: `API Token`,
+    //   description: `Provide Fibery API Token`,
+    //   id: `api_key`,
+    // },
+    // {
+    //   type: "link",
+    //   id: "link",
+    //   name: "Get Fibery API Token from url below.",
+    //   value: "https://ooooo.fibery.io/api/tokens",
+    // },
   ],
 };
 

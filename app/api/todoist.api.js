@@ -130,7 +130,7 @@ const getTypes = () => {
 };
 
 module.exports.config = async ({ account, pageSize }) => {
-  console.log("config: account: ", account);
+  // console.log("config: account: ", account);
   const types = getTypes();
   const filters = [
     {
@@ -213,9 +213,9 @@ const processItem = ({ schema, item, requestedType, filter }) => {
   const months = datesApi.getDates({ filter, requestedType: "month" });
   const weekdaynames = datesApi.getWeekDayNames();
 
-  if(requestedType=="completed_item"){
-    r["__syncAction"] = "SET";
-  }
+  // if(requestedType=="completed_item"){
+  //   r["__syncAction"] = "SET";
+  // }
 
   _.keys(schema).forEach((id) => {
     const schemaValue = schema[id];
@@ -229,7 +229,7 @@ const processItem = ({ schema, item, requestedType, filter }) => {
         r[id] = null;
       }
 
-      // set relations
+    // set relations
     } else if (["date", "week", "month", "weekdayname"].includes(id)) {
       r[id] = datesApi.getDateRelation({
         requestedType: id,
@@ -240,7 +240,7 @@ const processItem = ({ schema, item, requestedType, filter }) => {
         weekdaynames,
       });
 
-      // status field is set as workflow type
+    // status field is set as workflow type
     } else if ("status" == id) {
       r[id] = getStatus({ requestedType });
 
@@ -254,7 +254,7 @@ const processItem = ({ schema, item, requestedType, filter }) => {
         r[id] = `https://todoist.com/app/${requestedType}/${item.id}`;
       }
 
-      // set other fields
+    // set other fields
     } else {
       r[id] = getValue(item, schemaValue);
     }
@@ -263,7 +263,7 @@ const processItem = ({ schema, item, requestedType, filter }) => {
 };
 
 const getData = async ({ account, filter, requestedType }) => {
-  console.log("getData: account: ", account);
+  // console.log("getData: account: ", account);
   switch (requestedType) {
     case "project":
       return await getSingleResourceFromSyncApi({
@@ -306,7 +306,7 @@ const getDateData = ({ account, filter, requestedType }) => {
 };
 
 module.exports.data = async ({ account, filter, requestedType }) => {
-  console.log("filter: ", filter);
+  // console.log("filter: ", filter);
   console.log("requestedType: ", requestedType);
   const synchronizationType = "full";
   const schema = schemas[requestedType];
