@@ -4,15 +4,15 @@
 
 Status: Under development
 
-Currently, this project is a personal development project for myself. Please use it for testing purposes as it is subject to major changes in the future.
+Currently, this project is a personal development project for myself. I have made it Public in order to receive feedback, but please be careful when using it as it is not yet complete.
 
 This is an integration app to import and display Todoist tasks and projects in Fibery.
 
-Currently, this is a unidirectional synchronous integration feature that only displays Todoist tasks and projects on the Fibery side.
+This is a unidirectional synchronous integration feature that simply displays tasks and projects in Todoist on the Fibery side.
 
-As of March 2023, a Bata version [partial bi-directional sync](https://the.fibery.io/@public/User_Guide/Guide/Jira-two-way- sync-159) has been implemented as a Bata version.
+As of March 2023, a Bata version of [partial bi-directional sync](https://the.fibery.io/@public/User_Guide/Guide/Jira-two-way-sync-159) has been implemented in the official Fibery-developed JIRA integration.
 
-In the future, when bi-directional sync development becomes available for the Fibery integration API, we intend to implement bi-directional sync in this project as well.
+In the future, when bi-directional sync development becomes available for the Fibery integration API, I intend to implement bi-directional sync in this project as well.
 
 <br>
 
@@ -20,47 +20,53 @@ In the future, when bi-directional sync development becomes available for the Fi
 
 This is still a development version, so please clone and host it by yourself.
 
-<br> ## Usage
+<br>
 
-## Implemented features
+## Implemented Features
 
 - Unidirectional synchronization of Todoist Task, Project, Label, and Collabolator.
 - Automatic synchronization of any period of time (every 60 to 240 minutes) set in Fibery.
 - Provides not only the same display as Todoist, but also more diverse perspectives through the use of the originally implemented Day, Week, Month, and Week day name DBs.
-- (*Completed Items are also retrieved, but the number of items retrieved is subject to the limitations of your Todoist plan)
+- (Note: Completed Items are also retrieved, but the number of items retrieved is subject to the limitations of your Todoist plan)
 
-<br> ## Features we would like to implement in the future
+<br>
 
-## Features we would like to implement in the future
-- (Not developed) Implement bi-directional sync of some attributes.
-- (pending) Implement near realtime sync with incoming webhooks.
-- (Confirmation of specification/probably not possible)Implementation of partial overwrite.
+## Features to be developed in the future
 
-<br
+- (Currently no way to implement) Bi-directional sync of some attributes.
+- (Currently no way to implement) Partial overwrite.
+- (Under development feasibility study) Near realtime sync with incoming webhooks.
+
+<br>
 
 ## Features
 
 ### Sample and suggested views
 
-You can see the list of tasks in a calendar view, which does not exist in Todoist. <br> ## Features
+**Calendar view:**<br>
+You can see the list of tasks in a calendar view, which does not exist in Todoist. <br>
 <img src="./imgs/calendar.jpg" width="70%" />
 
-This view is similar to Todoist's Board view and can also display subtasks. <br> <br
+**Day Board View:**<br>
+This view is similar to Todoist's Board view and can also display subtasks. <br>
 <img src="./imgs/dayboard.jpg" width="70%" />
 
-<br> <img src=". <br> <br> <img src=".
+**Week Board View:**<br>
+This is a week view, which is not possible in Todoist. <br>
 <img src="./imgs/weekboard.jpg" width="70%" />
 
+**Week day name View:**<br>
 Vertical axis is the day of the week of ISO week, which Todoist cannot display. <br>
-This display is similar to a calendar, but can show more fields. <br> <br
+This display is similar to a calendar, but can show more fields. <br>
 <img src="./imgs/weekdaynameboard.jpg" width="70%" />
 
-This is a monthly display. For example, if you filter to only recurring tasks that only occur on a weekly or monthly basis, you can probably get a better idea of the appearance schedule. <br> <br
+**Month View**:<br>
+For example, if you filter to only recurring tasks that only occur on a weekly or monthly basis, you can probably get a better idea of the appearance schedule. <br>
 <img src="./imgs/monthboard.jpg" width="70%" />
 
 ### And more...
 
-Otherwise, the freedom of Fibery can be applied to Todoist.
+Addition of these, the freedom of Fibery can be applied to Todoist.
 
 In the future, when this application becomes stable/mature, it may be possible to turn on the setting to keep past data (see image below) and generate a graph where completed tasks can be evaluated.
 
@@ -78,9 +84,13 @@ It may also be possible to replicate Todoist's Karma.
 
 ## Things I noticed during development (to other developers)
 
-- You can also specify workflow as a subType of text, in addition to what is listed in the documentation.
-  - I think the subtype can probably use most of the dropdown in the image below (untested)
+- You can also specify workflow as a subType for text, in addition to what is listed in the documentation.
+  - The subtype can probably be roughly the dropdown in the image below (untested)
   - <img src="./imgs/subtypes.png" width="20%" />
+- Although not mentioned in the documentat, the actual value passed when subType is `date-range` is in the following format
+  - `JSON.stringify({start: YYYY-MM-DD, end: YYYY-MM-DD})`
+- It seems possible to implement near realtime sync of some fields by responding to Incoming Webhooks.
+  - The officially developed Intercom integration uses [this feature](https://the.fibery.io/@public/User_Guide/Guide/Intercom-integration-73/anchor=Change-sync-interval--c57554b4-9a53-4623-9a89-506043592763).
 
 <br>
 
@@ -92,4 +102,4 @@ It may also be possible to replicate Todoist's Karma.
 - [Fibery integration app example Notion app](https://gitlab.com/fibery-community/notion-app)
 - [Fibery integration app example Public Holiday app](https://gitlab.com/fibery-community/holidays-integration-app)
 - [Fibery integration app example Sample apps](https://gitlab.com/fibery-community/integration-sample-apps)
-- Day.js](https://day.js.org/)
+- [Day.js](https://day.js.org/)

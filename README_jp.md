@@ -4,11 +4,11 @@
 
 Status: 開発中
 
-現状、本プロジェクトは自分のための個人開発プロジェクトです。今後大きな変更をする可能性があるので、ご利用の際はテスト目的でご利用ください。
+現状、本プロジェクトは自分のための個人開発プロジェクトです。フィードバックを受けるためにPublicにしておりますが、未完成なので利用の際には注意してください。
 
 FiberyでTodoistのタスクやプロジェクトを取り込んで表示するための統合機能アプリです。
 
-現在は、TodoistのタスクやプロジェクトをFibery側で表示するだけの、単一方向同期の統合機能です。
+TodoistのタスクやプロジェクトをFibery側で表示するだけの、単一方向同期の統合機能です。
 
 2023年3月現在、Fibery公式が開発したJIRAの統合機能にて、Bata版として[部分的なBi-directional sync](https://the.fibery.io/@public/User_Guide/Guide/Jira-two-way-sync-159)が実装されています。
 
@@ -81,6 +81,11 @@ TodoistのKarmaの再現もできるかもしれません。
 - textのsubTypeとして、ドキュメントに記載されている以外にworkflowも指定できる。
   - subtypeは多分下の画像のドロップダウンが大体使えると思います（未検証）
   - <img src="./imgs/subtypes.png" width="20%" />
+- Incoming Webhookを元にした、一部フィールドのnear realtime syncの実装は可能らしいです。公式に開発されているIntercomの統合機能では、[本機能が使われています。](https://the.fibery.io/@public/User_Guide/Guide/Intercom-integration-73/anchor=Change-sync-interval--c57554b4-9a53-4623-9a89-506043592763)
+- ドキュメントには書いてませんが、subTypeがdate-rangeの場合に実際に渡す値は、下記の形式です
+  - `JSON.stringify({start: YYYY-MM-DD, end: YYYY-MM-DD})`
+
+
 
 <br>
 
